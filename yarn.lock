@@ -1053,6 +1053,41 @@
     xcode "^2.0.0"
     xmldoc "^0.4.0"
 
+"@react-native-firebase/analytics@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-0.2.3.tgz#0899c4eeb770e0107b61471c4bb9ff3efbec1779"
+  integrity sha512-OUY/k7ziMJOb7bQqJsQ2M43y78U6R7nkWl76iUI7Zx0q/y6U8b5zKcqkx7kGD1nK2qrK6bzRmHXbrQNLnyz+BQ==
+  dependencies:
+    "@react-native-firebase/app-types" "0.2.3"
+    "@react-native-firebase/common" "0.2.3"
+
+"@react-native-firebase/app-types@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-0.2.3.tgz#2a81681a2cbe6ca80d818e653f1ad50c32753578"
+  integrity sha512-EKSvTg/bkD8+ugOeLzNDM8IGYlVetAfy8P++yiByHEULDNIPH8azVyYx5n7rUANjAB/4albgoEuTFehN85ZCNw==
+
+"@react-native-firebase/app@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-0.2.3.tgz#7b012d820d410e86b7d14129b6fbaf9a41f2a4ad"
+  integrity sha512-YL87BaYSddQmG9YqzlS3ZJOajibj/0W+wX0lcwpJRd6puR+ZWCCT5ZbKTD+CDAqSvt9vokKvXcNcWarE4uDEZg==
+  dependencies:
+    "@react-native-firebase/app-types" "0.2.3"
+    "@react-native-firebase/common" "0.2.3"
+    opencollective-postinstall "^2.0.1"
+
+"@react-native-firebase/common@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/common/-/common-0.2.3.tgz#0009e3c5de875fa380c3a46ff36d250262bb18a7"
+  integrity sha512-CyvRTD5fODD65ywGThleB+WP7E9wrQv/XB+cy+R8KgEkf3AKDPnI5mjS7t9P8jGLzYZQWy7VU/ynp6f6H/5laQ==
+
+"@react-native-firebase/database@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-0.2.3.tgz#a876f0ba8d8de368ddb989e40f1c8e38ff512d61"
+  integrity sha512-GbOy1kkSNxfv3eQBnheOWu4cHpyYIGmmgEh6FMNatR1OB9mjXOGWjIrmEWJQTL23GzHdS0g2sbTm5CxmSP0mLA==
+  dependencies:
+    "@react-native-firebase/app-types" "0.2.3"
+    "@react-native-firebase/common" "0.2.3"
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
@@ -3964,6 +3999,11 @@ jest@^24.7.1:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
 
+jetifier@^1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/jetifier/-/jetifier-1.6.4.tgz#6159db8e275d97980d26162897a0648b6d4a3222"
+  integrity sha512-+f/4OLeqY8RAmXnonI1ffeY1DR8kMNJPhv5WMFehchf7U71cjMQVKkOz1n6asz6kfVoAqKNWJz1A/18i18AcXA==
+
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
@@ -5028,6 +5068,11 @@ onetime@^2.0.0:
   integrity sha1-BnQoIw/WdEOyeUsiu6UotoZ5YtQ=
   dependencies:
     mimic-fn "^1.0.0"
+
+opencollective-postinstall@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.2.tgz#5657f1bede69b6e33a45939b061eb53d3c6c3a89"
+  integrity sha512-pVOEP16TrAO2/fjej1IdOyupJY8KDUM1CvsaScRbw6oddvpQoOfGk4ywha0HKKVAD6RkW4x6Q+tNBwhf3Bgpuw==
 
 opn@^3.0.2:
   version "3.0.3"

@@ -1,10 +1,18 @@
+*.swp
+
+# Dependencies
+/vendor/*
+
 # OSX
-#
 .DS_Store
 
-# Xcode
-#
+# Ruby gems and binstubs from our Gemfile
+/.bundle
+
+# iOS
 build/
+dynamic.*.xcconfig
+GoogleService-*-Info.plist
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -19,38 +27,103 @@ xcuserdata
 DerivedData
 *.hmap
 *.ipa
+*.dSYM.zip
 *.xcuserstate
+*.xcscmblueprint
 project.xcworkspace
+ios/Pods/
+ios/Driver.xcworkspace
 
-# Android/IntelliJ
-#
-build/
+# Android
 .idea
 .gradle
-local.properties
 *.iml
+/android/captures
+.externalNativeBuild/
+android/local.properties
+android/.project
+android/app/.project
+android/app/bin/
+android/.settings/
+android/app/.classpath
+android/app/.settings/
 
-# node.js
-#
+# Node.js
 node_modules/
 npm-debug.log
-yarn-error.log
 
-# BUCK
-buck-out/
-\.buckd/
-*.keystore
+# Code Coverage
+/.nyc_output/
+/coverage/
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
+# Artifacts
+dist/
 
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+# Don't check in environment overrides
+configjs/envOverrides.json
 
-# Bundle artifact
-*.jsbundle
+Autosave files
+*~
+
+# build/test
+[Oo]bj/
+[Bb]in/
+/ConvoyUITests/packages/
+/ConvoyUITests/results.xml
+/ConvoyUITests/junit_results.xml
+
+# globs
+Makefile.in
+*.DS_Store
+*.sln.cache
+*.suo
+*.cache
+*.pidb
+*.userprefs
+*.usertasks
+config.log
+config.make
+config.status
+aclocal.m4
+install-sh
+autom4te.cache/
+*.user
+*.tar.gz
+*.tsbuildinfo
+tarballs/
+test-results/
+Thumbs.db
+
+# Fastlane
+fastlane/report.xml
+
+# Mac bundle stuff
+*.dmg
+
+# resharper
+*_Resharper.*
+*.Resharper
+
+#dotCover
+*.dotCover
+
+# Automation additions
+
+# Binaries
+*.ipa
+*.app
+*.apk
+
+# Archives
+*.zip
+
+# Nuget
+*.nupkg
+
+# Circle
+.build-env
+
+# Yalc
+.yalc/
+
+/translations

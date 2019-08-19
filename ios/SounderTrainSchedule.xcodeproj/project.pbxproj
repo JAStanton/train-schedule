@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		19ABE2B97384DC94F9D72820 /* libPods-SounderTrainSchedule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BD141203E7002F32C9BD892 /* libPods-SounderTrainSchedule.a */; };
+		41D63ECE2309FFA300AC88BB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 41D63ECD2309FFA300AC88BB /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = SounderTrainSchedule/main.m; sourceTree = "<group>"; };
 		1BD141203E7002F32C9BD892 /* libPods-SounderTrainSchedule.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SounderTrainSchedule.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41D63ECD2309FFA300AC88BB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A6FD1BC46E64F8D8C0D7879C /* Pods-SounderTrainSchedule.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SounderTrainSchedule.release.xcconfig"; path = "Target Support Files/Pods-SounderTrainSchedule/Pods-SounderTrainSchedule.release.xcconfig"; sourceTree = "<group>"; };
 		EABD24D08B23DA7926D60759 /* Pods-SounderTrainSchedule.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SounderTrainSchedule.debug.xcconfig"; path = "Target Support Files/Pods-SounderTrainSchedule/Pods-SounderTrainSchedule.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -53,6 +55,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				41D63ECD2309FFA300AC88BB /* GoogleService-Info.plist */,
 			);
 			name = SounderTrainSchedule;
 			sourceTree = "<group>";
@@ -74,7 +77,6 @@
 				EABD24D08B23DA7926D60759 /* Pods-SounderTrainSchedule.debug.xcconfig */,
 				A6FD1BC46E64F8D8C0D7879C /* Pods-SounderTrainSchedule.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -139,9 +141,8 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = F2J3HN4HWN;
 					};
 				};
 			};
@@ -150,6 +151,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -170,6 +172,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				41D63ECE2309FFA300AC88BB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +268,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = F2J3HN4HWN;
 				INFOPLIST_FILE = SounderTrainSchedule/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -272,7 +276,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.soundertrainschedule;
 				PRODUCT_NAME = SounderTrainSchedule;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -284,6 +288,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F2J3HN4HWN;
 				INFOPLIST_FILE = SounderTrainSchedule/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -291,7 +296,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.soundertrainschedule;
 				PRODUCT_NAME = SounderTrainSchedule;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -30,4 +30,10 @@ target 'SounderTrainSchedule' do
   pod 'RNReanimated', :podspec => '../node_modules/react-native-reanimated/RNReanimated.podspec'
 
   use_unimodules!
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
+  pod 'RNFBDatabase', :path => '../node_modules/@react-native-firebase/database'
+
+  pod 'RNFBAnalytics', :path => '../node_modules/@react-native-firebase/analytics'
+
 end

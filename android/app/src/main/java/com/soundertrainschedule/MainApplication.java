@@ -3,6 +3,9 @@ package com.soundertrainschedule;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage;
+import io.invertase.firebase.database.ReactNativeFirebaseDatabasePackage;
+import io.invertase.firebase.ReactNativeFirebaseAppPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -39,6 +42,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeFirebaseAnalyticsPackage(),
+            new ReactNativeFirebaseDatabasePackage(),
+            new ReactNativeFirebaseAppPackage(),
           new ReanimatedPackage(),
           new RNGestureHandlerPackage(),
           new ModuleRegistryAdapter(mModuleRegistryProvider)

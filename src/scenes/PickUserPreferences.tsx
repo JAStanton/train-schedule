@@ -39,7 +39,7 @@ export default class Main extends Component<Props, State> {
     const stations = this._getAvailableStations();
     return (
       <View style={STYLES.root}>
-        <Text onPress={this._onChangeDirection}>{direction}</Text>
+        <Text onPress={this._onChangeDirection}>{!this.state.origin ? direction : 'Back'}</Text>
         {stations.map((station, index) => {
           const onPress =
             index < this.props.stations.length - 1 ? this._onPickPref.bind(this, station, index) : null;
@@ -59,6 +59,11 @@ export default class Main extends Component<Props, State> {
   }
 
   _onChangeDirection = () => {
+    if (this.state.origin) {
+      this.setState({ origin: null });
+      return;
+    }
+
     this.setState({
       direction: this.state.direction === DIRECTION.NORTH ? DIRECTION.SOUTH : DIRECTION.NORTH,
     });

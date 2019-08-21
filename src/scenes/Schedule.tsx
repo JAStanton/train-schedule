@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import * as colors from '../constants/colors';
 import { Stations, UserPreferences } from '../lib/database';
-import TrainSchedule, { DIRECTION } from '../lib/schedule';
+import TrainSchedule from '../lib/schedule';
 
 const STYLES = StyleSheet.create({
   root: {
@@ -28,8 +28,8 @@ interface Props {
 
 export default class Schedule extends Component<Props> {
   render() {
-    const { origin, destination } = this.props.userPreferences;
-    const stopsBetween = this.props.schedule.timesBetweenStations(origin, destination, DIRECTION.NORTH);
+    const { origin, destination, direction } = this.props.userPreferences;
+    const stopsBetween = this.props.schedule.timesBetweenStations(origin, destination, direction);
     return (
       <View style={STYLES.root}>
         <Text style={STYLES.text}>{this.props.userPreferences.origin}</Text>
@@ -39,7 +39,7 @@ export default class Schedule extends Component<Props> {
         </Text>
         {stopsBetween.map(stop => (
           <Text key={stop.id}>
-            {stop.stationName}: {stop.prettyTime}
+            {stop.stationName}: {stop.time && stop.time.toFormat('h:mm a')}
           </Text>
         ))}
       </View>

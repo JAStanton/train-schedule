@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
 
@@ -35,22 +36,39 @@ export default class Main extends Component<{}, State> {
   render() {
     const { schedule, stations, userPreferences } = this.state;
     const hasData = schedule && stations;
+    const hasOriginDestination = this._hasOriginDestination(this.state.userPreferences);
     return (
       <SafeAreaView style={STYLES.root}>
         {!hasData && <Loading />}
-        {hasData && !userPreferences && (
-          <PickUserPreferences stations={stations} onSelectPreferences={this._onSelectPreferences} />
+        {hasData && !hasOriginDestination && (
+          <PickUserPreferences
+            stations={stations}
+            userPreferences={this.state.userPreferences}
+            onSelectPreferences={this._onSelectPreferences}
+          />
         )}
-        {hasData && userPreferences && (
+        {hasData && hasOriginDestination && userPreferences && (
           <Schedule schedule={schedule} stations={stations} userPreferences={userPreferences} />
         )}
-        {hasData && userPreferences && <Text onPress={this._onChangeStations}>Change Stations</Text>}
+        {hasData && hasOriginDestination && userPreferences && (
+          <Text onPress={this._onChangeStations}>Change Stations</Text>
+        )}
       </SafeAreaView>
     );
   }
 
+  _hasOriginDestination(userPreferences: UserPreferences) {
+    return !!(userPreferences && userPreferences.origin && userPreferences.destination);
+  }
+
   _onChangeStations = () => {
-    this.setState({ userPreferences: null });
+    this.setState({
+      userPreferences: {
+        origin: null,
+        destination: null,
+        direction: _.get(this.state.userPreferences, 'direction'),
+      },
+    });
   };
 
   _onSelectPreferences = (userPreferences: UserPreferences) => {

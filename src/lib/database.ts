@@ -1,19 +1,20 @@
-import luxon from 'luxon';
+import { DateTime } from 'luxon';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
-import * as storage from '../constants/storage';
 
+import * as storage from '../constants/storage';
 import Schedule, { RawTrainSchedule } from './schedule';
+import { DIRECTION } from '../constants/trains';
 
 const db = database();
-const scheduleRef = db.ref(`/schedule`);
-const stationsRef = db.ref(`/stations`);
+const DEFAULT_TTL = { day: 1 };
 
 export type Stations = string[];
 
 export type UserPreferences = {
   origin: string;
   destination: string;
+  direction: DIRECTION;
 };
 
 export type SessionData = {
@@ -21,6 +22,28 @@ export type SessionData = {
   stations: Stations;
   userPreferences: UserPreferences | undefined;
 };
+
+export async function getSessionData(): Promise<SessionData> {
+  const [userPreferences, rawTrainSchedule, stations] = await Promise.all([
+    getUserPreferences(),
+    getWithTTL('schedule'),
+    getWithTTL('stations'),
+  ]);
+
+  return {
+    schedule: new Schedule(rawTrainSchedule),
+    stations,
+    userPreferences,
+  };
+}
+
+async function getUserPreferences() {
+  try {
+    return JSON.parse(await AsyncStorage.getItem(storage.USER_PREFERENCES));
+  } catch (error) {
+    console.error('Failed to get session data out of storage', error);
+  }
+}
 
 export async function setUserPreferences(userPreferences: UserPreferences) {
   try {
@@ -30,42 +53,30 @@ export async function setUserPreferences(userPreferences: UserPreferences) {
   }
 }
 
-export async function getSessionData(): Promise<SessionData> {
-  let localSessionData;
+async function getWithTTL(ref: string) {
+  let value, updatedAt;
   try {
-    localSessionData = JSON.parse(await AsyncStorage.getItem(storage.SESSION));
-  } catch (error) {
-    console.error('Failed to get session data out of storage', error);
-  }
-
-  let userPreferences;
-  try {
-    userPreferences = JSON.parse(await AsyncStorage.getItem(storage.USER_PREFERENCES));
+    ({ value, updatedAt } = JSON.parse(await AsyncStorage.getItem(ref)));
   } catch (error) {
     console.error('Failed to get user preferences out of storage', error);
   }
 
-  let rawTrainSchedule: RawTrainSchedule, stations;
-  if (localSessionData && !isExpiredCache(localSessionData.updatedAt)) {
-    ({ rawTrainSchedule, stations } = localSessionData);
-  } else {
-    const [scheduleSnapshot, stationsSnapshot] = await Promise.all([
-      scheduleRef.once('value'),
-      stationsRef.once('value'),
-    ]);
-    rawTrainSchedule = scheduleSnapshot.val();
-    stations = stationsSnapshot.val().reverse();
+  if (value && !isExpiredCache(updatedAt)) {
+    return value;
   }
 
-  return {
-    schedule: new Schedule(rawTrainSchedule),
-    stations,
-    userPreferences,
-  };
+  const dbRef = db.ref(`/${ref}`);
+  const valueSnapshot = await dbRef.once('value');
+  if (!valueSnapshot) return;
+  value = valueSnapshot.val();
+  if (value) {
+    AsyncStorage.setItem(ref, JSON.stringify({ value, updatedAt: DateTime.local().toISO() }));
+  }
+
+  return value;
 }
 
 function isExpiredCache(updatedAt) {
-  return true;
-  const updatedAtDateTime = luxon(updatedAt);
-  return updatedAtDateTime.isBefore(luxon().subtract(1, 'hour'));
+  if (!updatedAt) return true;
+  return DateTime.fromISO(updatedAt) < DateTime.local().minus(DEFAULT_TTL);
 }

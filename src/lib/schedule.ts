@@ -1,10 +1,7 @@
 import _ from 'lodash';
 import luxon, { DateTime } from 'luxon';
 
-export enum DIRECTION {
-  NORTH = 'NORTH',
-  SOUTH = 'SOUTH',
-}
+import { DIRECTION } from '../constants/trains';
 
 const stationNames = [
   'Lakewood Station',
@@ -96,7 +93,9 @@ export default class Schedule {
     for (const train of trains) {
       for (let stopId = startStop.id; stopId < train.stops.length; stopId++) {
         schedule.push(train.stops[stopId]);
-        if (stopId === endStopIndex) return schedule;
+        if (stopId === endStopIndex) {
+          return schedule;
+        }
       }
     }
 

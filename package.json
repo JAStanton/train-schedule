@@ -7,11 +7,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.1",
     "@react-native-firebase/analytics": "^0.2.3",
     "@react-native-firebase/app": "^0.2.3",
     "@react-native-firebase/database": "^0.2.3",
     "expo": "^34.0.1",
     "jetifier": "^1.6.4",
+    "lodash": "^4.17.15",
+    "luxon": "^1.17.2",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "0.59.8",
@@ -26,6 +29,7 @@
     "@types/react-native": "^0.57.65",
     "babel-preset-expo": "^6.0.0",
     "jest-expo": "^34.0.0",
+    "prettier": "1.18.2",
     "typescript": "^3.4.5"
   },
   "jest": {

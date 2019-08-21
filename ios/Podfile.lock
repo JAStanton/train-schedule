@@ -146,6 +146,8 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - RNCAsyncStorage (1.6.1):
+    - React
   - RNFBAnalytics (0.2.3):
     - Firebase/Core (~> 6.5.0)
     - React
@@ -207,6 +209,7 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBDatabase (from `../node_modules/@react-native-firebase/database`)"
@@ -279,6 +282,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   React:
     :path: "../node_modules/react-native"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-community/async-storage"
   RNFBAnalytics:
     :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
@@ -354,6 +359,7 @@ SPEC CHECKSUMS:
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   React: 76e6aa2b87d05eb6cccb6926d72685c9a07df152
+  RNCAsyncStorage: 2e2e3feb9bdadc752a026703d8c4065ca912e75a
   RNFBAnalytics: 210c5728dd48fde33c47eba855b206071e39a654
   RNFBApp: 6c229d10285d04c8dcbbc57e9dc3766484be55da
   RNFBDatabase: 55d572562c2e93d0d83f0b16e435cfe1dfef596e
@@ -373,6 +379,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 8664abd37a00715727e60df9ecd65e42ba47b548
   yoga: 92b2102c3d373d1a790db4ab761d2b0ffc634f64
 
-PODFILE CHECKSUM: 3b823fc3deef1d7ac572c0aff6dc215f49fd38d2
+PODFILE CHECKSUM: df3247fdf1815300d7d1efc436a5cd6c1065c553
 
 COCOAPODS: 1.6.1

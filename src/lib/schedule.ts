@@ -60,7 +60,7 @@ export type TrainSchedule = {
   [DIRECTION.SOUTH]: Train[];
 };
 
-type Stop = {
+export type Stop = {
   id: number;
   stationName: string;
   time?: luxon;
@@ -80,6 +80,16 @@ export default class Schedule {
   constructor(raw: RawTrainSchedule) {
     this._raw = raw;
     this._transformed = this._transformRaw();
+  }
+
+  timesForStop(stationName: string, direction: DIRECTION): Stop['time'][] {
+    const trains = this._transformed[direction];
+    const stop = this._findStopByName(trains[0], stationName);
+    const stops = [];
+    for (const train of trains) {
+      stops.push(train.stops[stop.id].time);
+    }
+    return stops;
   }
 
   timesBetweenStations(start: string, end: string, direction: DIRECTION): Stop[] {

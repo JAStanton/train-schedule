@@ -29,20 +29,19 @@ interface State extends UserPreferences {}
 
 export default class Main extends Component<Props, State> {
   state = {
-    direction: undefined,
+    direction: this.props.userPreferences.direction,
     origin: undefined,
     destination: undefined,
   };
 
   render() {
-    const direction = this._getDirection();
+    const direction = this.state.direction;
     const stations = this._getAvailableStations();
     return (
       <View style={STYLES.root}>
         <Text onPress={this._onChangeDirection}>{!this.state.origin ? direction : 'Back'}</Text>
         {stations.map((station, index) => {
-          const onPress =
-            index < this.props.stations.length - 1 ? this._onPickPref.bind(this, station, index) : null;
+          const onPress = index < stations.length - 1 ? this._onPickPref.bind(this, station, index) : null;
           return (
             <Text key={index} style={STYLES.text} onPress={onPress}>
               {station}
@@ -51,11 +50,6 @@ export default class Main extends Component<Props, State> {
         })}
       </View>
     );
-  }
-
-  _getDirection() {
-    if (this.state.direction) return this.state.direction;
-    return _.get(this.props.userPreferences, 'direction', DIRECTION.SOUTH);
   }
 
   _onChangeDirection = () => {
@@ -70,7 +64,7 @@ export default class Main extends Component<Props, State> {
   };
 
   _getAvailableStations() {
-    const direction = this._getDirection();
+    const direction = this.state.direction;
     const stations = direction === DIRECTION.SOUTH ? this.props.stations : [...this.props.stations].reverse();
 
     if (!this.state.origin) return stations;
@@ -79,13 +73,14 @@ export default class Main extends Component<Props, State> {
   }
 
   _onPickPref = (station, index) => {
-    const direction = this._getDirection();
+    const direction = this.state.direction;
+    const stations = this._getAvailableStations();
     if (!this.state.origin) {
-      const selectedSecondToLastElement = index === this.props.stations.length - 2;
+      const selectedSecondToLastElement = index === stations.length - 2;
       if (selectedSecondToLastElement) {
         this.props.onSelectPreferences({
           origin: station,
-          destination: this.props.stations[this.props.stations.length - 1],
+          destination: stations[stations.length - 1],
           direction,
         });
         return;

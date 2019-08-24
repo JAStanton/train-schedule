@@ -73,6 +73,17 @@ type Train = {
   stops: Stop[];
 };
 
+export enum AM_PM {
+  AM = 'AM',
+  PM = 'PM',
+  AM_AND_PM = 'AM_AND_PM',
+}
+
+type ShowMapSettings = {
+  originToDestination: AM_PM;
+  destinationToOrigin: AM_PM;
+};
+
 export default class Schedule {
   _raw: RawTrainSchedule;
   _transformed: TrainSchedule;
@@ -82,17 +93,45 @@ export default class Schedule {
     this._transformed = this._transformRaw();
   }
 
-  timesForStop(stationName: string, direction: DIRECTION): Stop['time'][] {
+  static oppositeDirectionOfDirection(direction: DIRECTION): DIRECTION {
+    return direction === DIRECTION.NORTH ? DIRECTION.SOUTH : DIRECTION.NORTH;
+  }
+
+  static stopsFilteredToTimeOfDay(stops: Stop[], amPm: AM_PM) {
+    if (amPm === AM_PM.AM_AND_PM) return stops;
+    return _.filter(stops, ({ time }) => time && time.toFormat('a') === amPm);
+  }
+
+  static stopsAfterTime(time, stops) {
+    return _.filter(stops, stop => stop.time > time);
+  }
+
+  commuterStops(origin: string, destination: string, direction: DIRECTION, showMap: ShowMapSettings): Stop[] {
+    const originToDestinationTimes = Schedule.stopsFilteredToTimeOfDay(
+      this.stopsForStation(origin, direction),
+      showMap.originToDestination,
+    );
+
+    const destinationToOriginTimes = Schedule.stopsFilteredToTimeOfDay(
+      this.stopsForStation(destination, Schedule.oppositeDirectionOfDirection(direction)),
+      showMap.destinationToOrigin,
+    );
+
+    const now = DateTime.local();
+    return Schedule.stopsAfterTime(now, [...originToDestinationTimes, ...destinationToOriginTimes]);
+  }
+
+  stopsForStation(stationName: string, direction: DIRECTION): Stop[] {
     const trains = this._transformed[direction];
     const stop = this._findStopByName(trains[0], stationName);
     const stops = [];
     for (const train of trains) {
-      stops.push(train.stops[stop.id].time);
+      stops.push(train.stops[stop.id]);
     }
     return stops;
   }
 
-  timesBetweenStations(start: string, end: string, direction: DIRECTION): Stop[] {
+  stopsBetweenStations(start: string, end: string, direction: DIRECTION): Stop[] {
     const trains = this._transformed[direction];
     const startStop = this._findStopByName(trains[0], start);
     const startStopIndex = startStop.id;

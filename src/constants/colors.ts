@@ -5,6 +5,6 @@ export const BACKGROUND_ACCENT = '#ED0029';
 export const BACKGROUND_ACCENT_DIM = '#C6172C';
 
 export const FOREGROUND_ACCENT = '#A39394';
-export const FOREGROUND_ACCENT_DIM = '#CFCDCF';
+export const FOREGROUND_ACCENT_DIM = '#424143';
 
 // ["#ED0029", "#0B0909", "#FBFBFB", "#A39394", "#C6172C", "#CFCDCF", "#DBDBA8"]

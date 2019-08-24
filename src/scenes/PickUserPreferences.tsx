@@ -41,7 +41,11 @@ export default class Main extends Component<Props, State> {
       <View style={STYLES.root}>
         <Text onPress={this._onChangeDirection}>{!this.state.origin ? direction : 'Back'}</Text>
         {stations.map((station, index) => {
-          const onPress = index < stations.length - 1 ? this._onPickPref.bind(this, station, index) : null;
+          let onPress = this._onPickPref.bind(this, station, index);
+          if (index == stations.length - 1 && !this.state.origin) {
+            onPress = null;
+          }
+
           return (
             <Text key={index} style={STYLES.text} onPress={onPress}>
               {station}
@@ -75,6 +79,7 @@ export default class Main extends Component<Props, State> {
   _onPickPref = (station, index) => {
     const direction = this.state.direction;
     const stations = this._getAvailableStations();
+
     if (!this.state.origin) {
       const selectedSecondToLastElement = index === stations.length - 2;
       if (selectedSecondToLastElement) {

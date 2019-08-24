@@ -32,9 +32,8 @@ export default class Schedule extends Component<Props> {
     const { origin, destination, direction } = this.props.userPreferences;
     return (
       <View style={STYLES.root}>
-        <Text style={STYLES.text}>{this.props.userPreferences.origin}</Text>
         <Text style={STYLES.text}>
-          {this.props.userPreferences.destination} going {direction}
+          {this.props.userPreferences.origin} to {this.props.userPreferences.destination} going {direction}
           {'\n\n'}
         </Text>
         {this._displayCommuterTimes()}
@@ -51,9 +50,6 @@ export default class Schedule extends Component<Props> {
 
     return (
       <View>
-        <Text>
-          Commuter Times for {origin} to {destination} going {direction}:
-        </Text>
         {_.map(stops, ({ time }, index) => {
           if (!time) return null;
           return <Text key={index}>{time.toFormat('h:mm a')}</Text>;

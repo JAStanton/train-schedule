@@ -17,6 +17,9 @@ const STYLES = StyleSheet.create({
     fontSize: 21,
     fontWeight: '700',
   },
+  action: {
+    color: colors.BACKGROUND_ACCENT,
+  },
 });
 
 interface Props {
@@ -39,7 +42,9 @@ export default class Main extends Component<Props, State> {
     const stations = this._getAvailableStations();
     return (
       <View style={STYLES.root}>
-        <Text onPress={this._onChangeDirection}>{!this.state.origin ? direction : 'Back'}</Text>
+        <Text style={STYLES.action} onPress={this._onChangeDirection}>
+          {!this.state.origin ? direction : 'Back'}
+        </Text>
         {stations.map((station, index) => {
           let onPress = this._onPickPref.bind(this, station, index);
           if (index == stations.length - 1 && !this.state.origin) {

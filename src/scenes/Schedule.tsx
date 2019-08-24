@@ -19,6 +19,9 @@ const STYLES = StyleSheet.create({
     fontSize: 21,
     fontWeight: '700',
   },
+  scheduleText: {
+    color: colors.FOREGROUND,
+  },
 });
 
 interface Props {
@@ -52,7 +55,11 @@ export default class Schedule extends Component<Props> {
       <View>
         {_.map(stops, ({ time }, index) => {
           if (!time) return null;
-          return <Text key={index}>{time.toFormat('h:mm a')}</Text>;
+          return (
+            <Text style={STYLES.scheduleText} key={index}>
+              {time.toFormat('h:mm a')}
+            </Text>
+          );
         })}
       </View>
     );

@@ -18,6 +18,9 @@ const STYLES = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.BACKGROUND,
   },
+  action: {
+    color: colors.BACKGROUND_ACCENT,
+  },
 });
 
 interface State {
@@ -62,10 +65,14 @@ export default class Main extends Component<{}, State> {
           <Schedule schedule={schedule} stations={stations} userPreferences={userPreferences} />
         )}
         {hasData && hasOriginDestination && userPreferences && (
-          <Text onPress={this._onChangeStations}>Change Stations</Text>
+          <Text style={STYLES.action} onPress={this._onChangeStations}>
+            Change Stations
+          </Text>
         )}
         {hasData && hasOriginDestination && userPreferences && (
-          <Text onPress={this._onClearUserPreferences}>Clear User Preferences</Text>
+          <Text style={STYLES.action} onPress={this._onClearUserPreferences}>
+            Clear User Preferences
+          </Text>
         )}
       </SafeAreaView>
     );

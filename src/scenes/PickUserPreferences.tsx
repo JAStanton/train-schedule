@@ -29,7 +29,7 @@ interface State extends UserPreferences {}
 
 export default class Main extends Component<Props, State> {
   state = {
-    direction: this.props.userPreferences.direction,
+    direction: _.get(this.props.userPreferences, 'direction', DIRECTION.NORTH),
     origin: undefined,
     destination: undefined,
   };

@@ -21,7 +21,7 @@ export type SessionData = {
   schedule: Schedule;
   stations: Stations;
   userPreferences: UserPreferences | undefined;
-};
+} | null;
 
 export async function getSessionData(): Promise<SessionData> {
   const [userPreferences, rawTrainSchedule, stations] = await Promise.all([
@@ -35,6 +35,10 @@ export async function getSessionData(): Promise<SessionData> {
     stations,
     userPreferences,
   };
+}
+
+export function clearUserPreferences() {
+  return AsyncStorage.clear();
 }
 
 async function getUserPreferences() {
@@ -57,9 +61,7 @@ async function getWithTTL(ref: string) {
   let value, updatedAt;
   try {
     ({ value, updatedAt } = JSON.parse(await AsyncStorage.getItem(ref)));
-  } catch (error) {
-    console.error('Failed to get user preferences out of storage', error);
-  }
+  } catch (_error) {}
 
   if (value && !isExpiredCache(updatedAt)) {
     return value;

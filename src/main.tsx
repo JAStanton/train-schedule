@@ -4,7 +4,13 @@ import React, { Component } from 'react';
 
 import { Loading, PickUserPreferences, Schedule } from './scenes';
 import * as colors from './constants/colors';
-import { getSessionData, setUserPreferences, Stations, UserPreferences } from './lib/database';
+import {
+  getSessionData,
+  setUserPreferences,
+  Stations,
+  UserPreferences,
+  clearUserPreferences,
+} from './lib/database';
 import TrainSchedule from './lib/schedule';
 
 const STYLES = StyleSheet.create({
@@ -28,6 +34,10 @@ export default class Main extends Component<{}, State> {
   };
 
   componentDidMount() {
+    this.getOrResetData();
+  }
+
+  getOrResetData() {
     getSessionData().then(({ schedule, stations, userPreferences }) => {
       this.setState({ schedule, stations, userPreferences });
     });
@@ -37,6 +47,7 @@ export default class Main extends Component<{}, State> {
     const { schedule, stations, userPreferences } = this.state;
     const hasData = schedule && stations;
     const hasOriginDestination = this._hasOriginDestination(this.state.userPreferences);
+
     return (
       <SafeAreaView style={STYLES.root}>
         {!hasData && <Loading />}
@@ -53,6 +64,9 @@ export default class Main extends Component<{}, State> {
         {hasData && hasOriginDestination && userPreferences && (
           <Text onPress={this._onChangeStations}>Change Stations</Text>
         )}
+        {hasData && hasOriginDestination && userPreferences && (
+          <Text onPress={this._onClearUserPreferences}>Clear User Preferences</Text>
+        )}
       </SafeAreaView>
     );
   }
@@ -60,6 +74,11 @@ export default class Main extends Component<{}, State> {
   _hasOriginDestination(userPreferences: UserPreferences) {
     return !!(userPreferences && userPreferences.origin && userPreferences.destination);
   }
+
+  _onClearUserPreferences = async () => {
+    await clearUserPreferences();
+    this.getOrResetData();
+  };
 
   _onChangeStations = () => {
     this.setState({

@@ -1,9 +1,11 @@
 import _ from 'lodash';
-import { ActivityIndicator, View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
+import { ActivityIndicator, View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { graphql } from 'react-apollo';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import * as colors from '../constants/colors';
+import * as queries from '../queries/queries';
 import { DIRECTION } from '../constants/trains';
 import { UserPreferences, Stations } from '../lib/database';
 import ScheduleInput from '../components/ScheduleInput';
@@ -12,6 +14,7 @@ const STYLES = StyleSheet.create({
   root: {
     flex: 1,
     paddingHorizontal: 8 * 4,
+    backgroundColor: colors.BACKGROUND,
   },
   text: {
     color: colors.FOREGROUND,
@@ -37,20 +40,29 @@ const STYLES = StyleSheet.create({
 
 interface Props {
   onSelectPreferences(userPreferences: UserPreferences): void;
-  stations: Stations;
-  userPreferences: UserPreferences;
+  data: {
+    loading: boolean;
+    stations?: Stations;
+    userPreferences?: UserPreferences;
+  };
 }
 
 interface State extends UserPreferences {}
 
-export default class Main extends Component<Props, State> {
+class PickUserPreferences extends Component<Props, State> {
+  static navigationOptions = {
+    header: null,
+  };
   state = {
-    direction: _.get(this.props.userPreferences, 'direction', DIRECTION.NORTH),
+    // direction: _.get(this.props.userPreferences, 'direction', DIRECTION.NORTH),
+    direction: undefined,
     origin: undefined,
     destination: undefined,
   };
 
   render() {
+    if (this.props.data.loading) return <View />;
+
     const direction = this.state.direction;
     const stations = this._getAvailableStations();
     return (
@@ -102,12 +114,13 @@ export default class Main extends Component<Props, State> {
   };
 
   _getAvailableStations() {
+    const { stations } = this.props.data;
     const direction = this.state.direction;
-    const stations = direction === DIRECTION.SOUTH ? this.props.stations : [...this.props.stations].reverse();
+    const stationsWithDirection = direction === DIRECTION.SOUTH ? stations : [...stations].reverse();
 
-    if (!this.state.origin) return stations;
-    const index = stations.indexOf(this.state.origin);
-    return [...stations.slice(index + 1, stations.length)];
+    if (!this.state.origin) return stationsWithDirection;
+    const index = stationsWithDirection.indexOf(this.state.origin);
+    return [...stationsWithDirection.slice(index + 1, stationsWithDirection.length)];
   }
 
   _onPickPref = (station, index) => {
@@ -136,3 +149,5 @@ export default class Main extends Component<Props, State> {
     });
   };
 }
+
+export default graphql(queries.BASE_RESOURCES)(PickUserPreferences);

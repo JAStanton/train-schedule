@@ -1,104 +1,97 @@
 import _ from 'lodash';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import React, { Component } from 'react';
+import ApolloClient from 'apollo-boost';
+import { View, StyleSheet } from 'react-native';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { ApolloProvider, useQuery } from '@apollo/react-hooks';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { persistCache } from 'apollo-cache-persist';
+import { withApollo } from 'react-apollo';
 
-import { Loading, PickUserPreferences, Schedule } from './scenes';
 import * as colors from './constants/colors';
-import {
-  getSessionData,
-  setUserPreferences,
-  Stations,
-  UserPreferences,
-  clearUserPreferences,
-} from './lib/database';
+import * as queries from './queries/queries';
+import * as database from './lib/database';
+import { PickUserPreferences, Schedule } from './scenes';
 import TrainSchedule from './lib/schedule';
+import Navigation from './navigation';
+
+type State = {
+  loaded: boolean;
+  client: any;
+};
 
 const STYLES = StyleSheet.create({
   root: {
-    flex: 1,
+   flex: 1,
     backgroundColor: colors.BACKGROUND,
-  },
-  action: {
-    color: colors.BACKGROUND_ACCENT,
   },
 });
 
-interface State {
-  schedule: TrainSchedule;
-  stations: Stations;
-  userPreferences: UserPreferences;
-}
-
 export default class Main extends Component<{}, State> {
-  state = {
-    schedule: undefined,
-    stations: undefined,
-    userPreferences: undefined,
-  };
+  state = { loaded: false, client: null };
 
-  componentDidMount() {
-    this.getOrResetData();
-  }
+  async componentDidMount() {
+    const cache = new InMemoryCache();
 
-  getOrResetData() {
-    getSessionData().then(({ schedule, stations, userPreferences }) => {
-      this.setState({ schedule, stations, userPreferences });
+    try {
+      await persistCache({
+        cache,
+        storage: AsyncStorage,
+      });
+    } catch (error) {
+      console.error('Error restoring Apollo cache', error);
+    }
+
+    const client = new ApolloClient({
+      resolvers: {
+        Query: {
+          stations: async root => {
+            return await database.getRef('/stations');
+          },
+          schedule: async root => {
+            const data = await database.getRef('/schedule');
+            const foo = new TrainSchedule(data);
+            return foo.transformed;
+          },
+          user: async root => {
+            const data = await database.getUserPreferences();
+            const origin = _.get(data, 'origin', '');
+            const destination = _.get(data, 'destination', '');
+            const direction = _.get(data, 'direction', '');
+
+            return {
+              __typename: 'User',
+              id: 1,
+              preferences: {
+                __typename: 'UserPreferences',
+                origin,
+                destination,
+                direction,
+              },
+            };
+          },
+        },
+      },
+      cache,
+    });
+
+    this.setState({
+      client,
+      loaded: true,
     });
   }
 
   render() {
-    const { schedule, stations, userPreferences } = this.state;
-    const hasData = schedule && stations;
-    const hasOriginDestination = this._hasOriginDestination(this.state.userPreferences);
+    const { client, loaded } = this.state;
+    if (!loaded) {
+      return <View style={STYLES.root} />;
+    }
 
     return (
-      <SafeAreaView style={STYLES.root}>
-        {!hasData && <Loading />}
-        {hasData && !hasOriginDestination && (
-          <PickUserPreferences
-            stations={stations}
-            userPreferences={this.state.userPreferences}
-            onSelectPreferences={this._onSelectPreferences}
-          />
-        )}
-        {hasData && hasOriginDestination && userPreferences && (
-          <Schedule schedule={schedule} stations={stations} userPreferences={userPreferences} />
-        )}
-        {hasData && hasOriginDestination && userPreferences && (
-          <Text style={STYLES.action} onPress={this._onChangeStations}>
-            Change Stations
-          </Text>
-        )}
-        {hasData && hasOriginDestination && userPreferences && (
-          <Text style={STYLES.action} onPress={this._onClearUserPreferences}>
-            Clear User Preferences
-          </Text>
-        )}
-      </SafeAreaView>
+      <ApolloProvider client={client}>
+        <Navigation />
+      </ApolloProvider>
     );
   }
-
-  _hasOriginDestination(userPreferences: UserPreferences) {
-    return !!(userPreferences && userPreferences.origin && userPreferences.destination);
-  }
-
-  _onClearUserPreferences = async () => {
-    await clearUserPreferences();
-    this.getOrResetData();
-  };
-
-  _onChangeStations = () => {
-    this.setState({
-      userPreferences: {
-        origin: null,
-        destination: null,
-        direction: _.get(this.state.userPreferences, 'direction'),
-      },
-    });
-  };
-
-  _onSelectPreferences = (userPreferences: UserPreferences) => {
-    this.setState({ userPreferences });
-    setUserPreferences(userPreferences);
-  };
 }

@@ -23,25 +23,11 @@ export type SessionData = {
   userPreferences: UserPreferences | undefined;
 } | null;
 
-export async function getSessionData(): Promise<SessionData> {
-  const [userPreferences, rawTrainSchedule, stations] = await Promise.all([
-    getUserPreferences(),
-    getWithTTL('schedule'),
-    getWithTTL('stations'),
-  ]);
-
-  return {
-    schedule: new Schedule(rawTrainSchedule),
-    stations,
-    userPreferences,
-  };
-}
-
 export function clearUserPreferences() {
   return AsyncStorage.clear();
 }
 
-async function getUserPreferences() {
+export async function getUserPreferences() {
   try {
     return JSON.parse(await AsyncStorage.getItem(storage.USER_PREFERENCES));
   } catch (error) {
@@ -57,28 +43,9 @@ export async function setUserPreferences(userPreferences: UserPreferences) {
   }
 }
 
-async function getWithTTL(ref: string) {
-  let value, updatedAt;
-  try {
-    ({ value, updatedAt } = JSON.parse(await AsyncStorage.getItem(ref)));
-  } catch (_error) {}
-
-  if (value && !isExpiredCache(updatedAt)) {
-    return value;
-  }
-
+export async function getRef(ref: string) {
   const dbRef = db.ref(`/${ref}`);
   const valueSnapshot = await dbRef.once('value');
   if (!valueSnapshot) return;
-  value = valueSnapshot.val();
-  if (value) {
-    AsyncStorage.setItem(ref, JSON.stringify({ value, updatedAt: DateTime.local().toISO() }));
-  }
-
-  return value;
-}
-
-function isExpiredCache(updatedAt) {
-  if (!updatedAt) return true;
-  return DateTime.fromISO(updatedAt) < DateTime.local().minus(DEFAULT_TTL);
+  return valueSnapshot.val();
 }

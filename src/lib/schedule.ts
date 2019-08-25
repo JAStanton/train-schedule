@@ -56,6 +56,7 @@ export type RawTrainSchedule = {
 // }
 //
 export type TrainSchedule = {
+  __typename: string;
   [DIRECTION.NORTH]: Train[];
   [DIRECTION.SOUTH]: Train[];
 };
@@ -86,11 +87,11 @@ type ShowMapSettings = {
 
 export default class Schedule {
   _raw: RawTrainSchedule;
-  _transformed: TrainSchedule;
+  transformed: TrainSchedule;
 
   constructor(raw: RawTrainSchedule) {
     this._raw = raw;
-    this._transformed = this._transformRaw();
+    this.transformed = this._transformRaw();
   }
 
   static oppositeDirectionOfDirection(direction: DIRECTION): DIRECTION {
@@ -122,7 +123,7 @@ export default class Schedule {
   }
 
   stopsForStation(stationName: string, direction: DIRECTION): Stop[] {
-    const trains = this._transformed[direction];
+    const trains = this.transformed[direction];
     const stop = this._findStopByName(trains[0], stationName);
     const stops = [];
     for (const train of trains) {
@@ -132,7 +133,7 @@ export default class Schedule {
   }
 
   stopsBetweenStations(start: string, end: string, direction: DIRECTION): Stop[] {
-    const trains = this._transformed[direction];
+    const trains = this.transformed[direction];
     const startStop = this._findStopByName(trains[0], start);
     const startStopIndex = startStop.id;
     const endStop = this._findStopByName(trains[0], end);
@@ -157,6 +158,7 @@ export default class Schedule {
 
   _transformRaw(): TrainSchedule {
     return {
+      __typename: 'Thing',
       [DIRECTION.NORTH]: this._convertRawStopsToTrain(this._raw.north, DIRECTION.NORTH),
       [DIRECTION.SOUTH]: this._convertRawStopsToTrain(this._raw.south, DIRECTION.SOUTH),
     };
@@ -164,14 +166,16 @@ export default class Schedule {
 
   _convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIRECTION): Train[] {
     return _.map(stops, (stop, trainId) => ({
+      __typename: 'Train',
       id: trainId,
       trainNumber: stop.Train as number,
       stops: _.map(stationOrder[direction], (station, stopId) => {
         const prettyTime = stop[station] as string;
         return {
+          __typename: 'Stop',
           id: stopId,
           stationName: station,
-          time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
+          // time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
           prettyTime: prettyTime || null,
         };
       }),

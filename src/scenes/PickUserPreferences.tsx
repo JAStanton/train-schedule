@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ActivityIndicator, View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { graphql } from 'react-apollo';
 import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-navigation';
 
 import * as colors from '../constants/colors';
 import * as queries from '../queries/queries';
@@ -27,8 +28,8 @@ const STYLES = StyleSheet.create({
   toSelector: {
     marginTop: 8 * 3,
   },
-  spacer20: {
-    flex: 0.2,
+  spacer10: {
+    flex: 0.1,
   },
   title: {
     textAlign: 'center',
@@ -66,8 +67,8 @@ class PickUserPreferences extends Component<Props, State> {
     const direction = this.state.direction;
     const stations = this._getAvailableStations();
     return (
-      <View style={STYLES.root}>
-        <View style={STYLES.spacer20}>
+      <SafeAreaView style={STYLES.root}>
+        <View style={STYLES.spacer10}>
           <Text style={STYLES.title}>Choose Schedule</Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
@@ -98,7 +99,7 @@ class PickUserPreferences extends Component<Props, State> {
             <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 

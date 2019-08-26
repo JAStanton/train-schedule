@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
 import { graphql, useMutation } from 'react-apollo';
 
@@ -56,6 +56,24 @@ const STYLES = StyleSheet.create({
     alignItems: 'flex-end',
     alignContent: 'flex-end',
   },
+  footer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveButtonText: {
+    color: colors.FOREGROUND,
+    fontSize: 21,
+    textAlign: 'center',
+  },
+  saveIcon: {
+    top: 3,
+    paddingLeft: 8,
+  },
 });
 
 interface Props {
@@ -97,6 +115,17 @@ function PickUserPreferences({ data, navigation }: Props) {
             <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
           </TouchableOpacity>
         </View>
+      </View>
+      <View style={STYLES.footer}>
+        <TouchableOpacity style={STYLES.saveButton}>
+          <Text style={STYLES.saveButtonText}>Save</Text>
+          <Ionicons
+            name='ios-arrow-round-forward'
+            size={32}
+            style={STYLES.saveIcon}
+            color={colors.BACKGROUND_ACCENT}
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

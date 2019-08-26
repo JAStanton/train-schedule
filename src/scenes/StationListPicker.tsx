@@ -17,7 +17,7 @@ const STYLES = StyleSheet.create({
     backgroundColor: colors.BACKGROUND,
   },
   stationName: {
-    fontSize: 21,
+    fontSize: 30,
     color: colors.FOREGROUND,
     fontWeight: '700',
     marginVertical: 4,
@@ -42,7 +42,7 @@ function StationListPicker({ data, ...props }: Props) {
 
   return (
     <SafeAreaView style={STYLES.root}>
-      <Header title='Pick a station' />
+      <Header title='Pick a Station' />
       <View style={STYLES.content}>
         {data.stations.map((stationName, index) => (
           <TouchableOpacity key={index}>

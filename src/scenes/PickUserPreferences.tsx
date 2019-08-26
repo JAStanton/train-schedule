@@ -68,6 +68,7 @@ const STYLES = StyleSheet.create({
   saveButtonText: {
     color: colors.FOREGROUND,
     fontSize: 21,
+    fontWeight: '700',
     textAlign: 'center',
   },
   saveIcon: {
@@ -93,7 +94,7 @@ function PickUserPreferences({ data, navigation }: Props) {
 
   return (
     <SafeAreaView style={STYLES.root}>
-      <Header title='Choose a schedule' />
+      <Header title='Choose a Schedule' />
       <View style={STYLES.content}>
         <View style={STYLES.innerContent}>
           <View style={STYLES.inputSelectors}>

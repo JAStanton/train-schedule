@@ -2,10 +2,12 @@ import _ from 'lodash';
 import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
-import { graphql } from 'react-apollo';
+import { graphql, useMutation } from 'react-apollo';
 
 import * as colors from '../constants/colors';
 import * as queries from '../queries/queries';
+import * as mutations from '../queries/mutations';
+import { navigation as navigationProps } from '../constants/types';
 import BaseScene from './BaseScene';
 import ScheduleInput from '../components/ScheduleInput';
 import { DIRECTION } from '../constants/trains';
@@ -41,121 +43,63 @@ const STYLES = StyleSheet.create({
     fontWeight: '700',
     color: colors.FOREGROUND,
   },
+  innerContent: {
+    flexDirection: 'row',
+  },
+  inputSelectors: {
+    flex: 1,
+  },
+  swapDirections: {
+    paddingLeft: 8,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    alignContent: 'flex-end',
+  },
 });
 
 interface Props {
   onSelectPreferences(userPreferences: UserPreferences): void;
   data: {
-    stations?: Stations;
-    userPreferences?: UserPreferences;
+    user: {
+      preferences: UserPreferences;
+    };
   };
+  navigation: navigationProps;
 }
 
-interface State extends UserPreferences {}
+function PickUserPreferences({ data, navigation }: Props) {
+  const [swapDirections] = useMutation(mutations.SWAP_DIRECTIONS);
+  const goToPicker = stationType => () => navigation.push('StationListPicker', { stationType });
+  const doSwapDirections = () => swapDirections();
 
-class PickUserPreferences extends BaseScene<Props, State> {
-  state = {
-    // direction: _.get(this.props.userPreferences, 'direction', DIRECTION.NORTH),
-    direction: undefined,
-    origin: undefined,
-    destination: undefined,
-  };
-
-  render() {
-    if (this.props.data.loading) return <View />;
-
-    const direction = this.state.direction;
-    const stations = this._getAvailableStations();
-
-    return (
-      <SafeAreaView style={STYLES.root}>
-        <Header title='Choose a schedule' />
-        <View style={STYLES.content}>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 1 }}>
-              <ScheduleInput
-                stationType={StationType.ORIGIN}
-                options={stations}
-                onSelect={this._onSelectScheduleInput}
-                label='From'
-                value={_.get(this.props.data, 'user.preferences.origin')}
-              />
-              <ScheduleInput
-                stationType={StationType.DESTINATION}
-                style={STYLES.toSelector}
-                options={stations}
-                onSelect={this._onSelectScheduleInput}
-                label='To'
-                value={_.get(this.props.data, 'user.preferences.destination')}
-              />
-            </View>
-            <TouchableOpacity
-              style={{
-                paddingLeft: 8,
-                paddingBottom: 8,
-                flexDirection: 'row',
-                alignItems: 'flex-end',
-                alignContent: 'flex-end',
-              }}
-            >
-              <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
-            </TouchableOpacity>
+  return (
+    <SafeAreaView style={STYLES.root}>
+      <Header title='Choose a schedule' />
+      <View style={STYLES.content}>
+        <View style={STYLES.innerContent}>
+          <View style={STYLES.inputSelectors}>
+            <ScheduleInput
+              stationType={StationType.ORIGIN}
+              onSelect={goToPicker(StationType.DESTINATION)}
+              label='From'
+              value={data.user.preferences.origin}
+            />
+            <ScheduleInput
+              stationType={StationType.DESTINATION}
+              style={STYLES.toSelector}
+              onSelect={goToPicker(StationType.DESTINATION)}
+              label='To'
+              value={data.user.preferences.destination}
+            />
           </View>
+          <TouchableOpacity onPress={doSwapDirections} style={STYLES.swapDirections}>
+            <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    );
-  }
-
-  _onChangeDirection = () => {
-    if (this.state.origin) {
-      this.setState({ origin: null });
-      return;
-    }
-
-    this.setState({
-      direction: this.state.direction === DIRECTION.NORTH ? DIRECTION.SOUTH : DIRECTION.NORTH,
-    });
-  };
-
-  _getAvailableStations() {
-    const { stations } = this.props.data;
-    const direction = this.state.direction;
-    const stationsWithDirection = direction === DIRECTION.SOUTH ? stations : [...stations].reverse();
-
-    if (!this.state.origin) return stationsWithDirection;
-    const index = stationsWithDirection.indexOf(this.state.origin);
-    return [...stationsWithDirection.slice(index + 1, stationsWithDirection.length)];
-  }
-
-  _onSelectScheduleInput = stationType => {
-    this.props.navigation.push('StationListPicker', { stationType });
-  };
-
-  _onPickPref = (station, index) => {
-    const direction = this.state.direction;
-    const stations = this._getAvailableStations();
-
-    if (!this.state.origin) {
-      const selectedSecondToLastElement = index === stations.length - 2;
-      if (selectedSecondToLastElement) {
-        this.props.onSelectPreferences({
-          origin: station,
-          destination: stations[stations.length - 1],
-          direction,
-        });
-        return;
-      }
-
-      this.setState({ origin: station });
-      return;
-    }
-
-    this.props.onSelectPreferences({
-      origin: this.state.origin,
-      destination: station,
-      direction,
-    });
-  };
+      </View>
+    </SafeAreaView>
+  );
 }
 
 export default graphql(queries.BASE_RESOURCES)(PickUserPreferences);

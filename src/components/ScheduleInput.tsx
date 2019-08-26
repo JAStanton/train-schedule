@@ -34,8 +34,7 @@ const STYLES = StyleSheet.create({
 type Props = {
   stationType: StationType;
   style?: {};
-  options: Stations;
-  onSelect: (stationType: StationType) => void;
+  onSelect: () => void;
   label: string;
   value: string;
 };
@@ -46,7 +45,7 @@ export default class ScheduleInput extends Component<Props> {
       <View style={[STYLES.root, this.props.style]}>
         <Text style={STYLES.label}>{this.props.label}</Text>
         <View style={STYLES.button}>
-          <TouchableOpacity onPress={this._onSelectValue}>{this._renderValue()}</TouchableOpacity>
+          <TouchableOpacity onPress={this.props.onSelect}>{this._renderValue()}</TouchableOpacity>
         </View>
       </View>
     );
@@ -58,8 +57,4 @@ export default class ScheduleInput extends Component<Props> {
     }
     return <Text style={STYLES.placeholder}>Tap to select</Text>;
   }
-
-  _onSelectValue = () => {
-    this.props.onSelect(this.props.stationType);
-  };
 }

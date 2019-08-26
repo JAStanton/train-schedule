@@ -5,3 +5,9 @@ export const CHOOSE_STATION = gql`
     chooseStation(stationType: $stationType, stationName: $stationName) @client
   }
 `;
+
+export const SWAP_DIRECTIONS = gql`
+  mutation swapDirections($ignore: String) {
+    swapDirections(ignore: $ignore) @client
+  }
+`;

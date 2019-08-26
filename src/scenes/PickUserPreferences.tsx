@@ -1,21 +1,25 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
 import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { graphql } from 'react-apollo';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
+import { graphql } from 'react-apollo';
 
 import * as colors from '../constants/colors';
 import * as queries from '../queries/queries';
-import { DIRECTION } from '../constants/trains';
-import { UserPreferences, Stations } from '../lib/database';
+import BaseScene from './BaseScene';
 import ScheduleInput from '../components/ScheduleInput';
+import { DIRECTION } from '../constants/trains';
+import { StationType } from '../constants';
+import { Header } from '../components';
+import { UserPreferences, Stations } from '../lib/database';
 
 const STYLES = StyleSheet.create({
   root: {
     flex: 1,
-    paddingHorizontal: 8 * 4,
     backgroundColor: colors.BACKGROUND,
+  },
+  content: {
+    paddingHorizontal: 8 * 4,
   },
   text: {
     color: colors.FOREGROUND,
@@ -42,7 +46,6 @@ const STYLES = StyleSheet.create({
 interface Props {
   onSelectPreferences(userPreferences: UserPreferences): void;
   data: {
-    loading: boolean;
     stations?: Stations;
     userPreferences?: UserPreferences;
   };
@@ -50,10 +53,7 @@ interface Props {
 
 interface State extends UserPreferences {}
 
-class PickUserPreferences extends Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-  };
+class PickUserPreferences extends BaseScene<Props, State> {
   state = {
     // direction: _.get(this.props.userPreferences, 'direction', DIRECTION.NORTH),
     direction: undefined,
@@ -66,38 +66,41 @@ class PickUserPreferences extends Component<Props, State> {
 
     const direction = this.state.direction;
     const stations = this._getAvailableStations();
+
     return (
       <SafeAreaView style={STYLES.root}>
-        <View style={STYLES.spacer10}>
-          <Text style={STYLES.title}>Choose Schedule</Text>
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ flex: 1 }}>
-            <ScheduleInput
-              options={stations}
-              onSelect={this._onPickPref}
-              label='From'
-              value={this.state.origin}
-            />
-            <ScheduleInput
-              style={STYLES.toSelector}
-              options={stations}
-              onSelect={this._onPickPref}
-              label='To'
-              value={this.state.destination}
-            />
+        <Header title='Choose a schedule' />
+        <View style={STYLES.content}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 1 }}>
+              <ScheduleInput
+                stationType={StationType.ORIGIN}
+                options={stations}
+                onSelect={this._onSelectScheduleInput}
+                label='From'
+                value={_.get(this.props.data, 'user.preferences.origin')}
+              />
+              <ScheduleInput
+                stationType={StationType.DESTINATION}
+                style={STYLES.toSelector}
+                options={stations}
+                onSelect={this._onSelectScheduleInput}
+                label='To'
+                value={_.get(this.props.data, 'user.preferences.destination')}
+              />
+            </View>
+            <TouchableOpacity
+              style={{
+                paddingLeft: 8,
+                paddingBottom: 8,
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                alignContent: 'flex-end',
+              }}
+            >
+              <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{
-              paddingLeft: 8,
-              paddingBottom: 8,
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              alignContent: 'flex-end',
-            }}
-          >
-            <MaterialIcons name='swap-vert' size={32} color={colors.FOREGROUND} />
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -123,6 +126,10 @@ class PickUserPreferences extends Component<Props, State> {
     const index = stationsWithDirection.indexOf(this.state.origin);
     return [...stationsWithDirection.slice(index + 1, stationsWithDirection.length)];
   }
+
+  _onSelectScheduleInput = stationType => {
+    this.props.navigation.push('StationListPicker', { stationType });
+  };
 
   _onPickPref = (station, index) => {
     const direction = this.state.direction;

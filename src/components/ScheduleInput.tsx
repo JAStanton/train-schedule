@@ -2,6 +2,7 @@ import { ActivityIndicator, View, Text, SafeAreaView, StyleSheet, TouchableOpaci
 import React, { Component } from 'react';
 
 import * as colors from '../constants/colors';
+import { StationType } from '../constants';
 import { Stations } from '../lib/database';
 
 const STYLES = StyleSheet.create({
@@ -23,29 +24,42 @@ const STYLES = StyleSheet.create({
     paddingBottom: 6,
     paddingTop: 2,
   },
+  placeholder: {
+    color: colors.FOREGROUND_ACCENT_DIM,
+    fontSize: 30,
+    fontWeight: '700',
+  },
 });
 
 type Props = {
+  stationType: StationType;
   style?: {};
   options: Stations;
-  onSelect: Function;
+  onSelect: (stationType: StationType) => void;
   label: string;
   value: string;
 };
 
-export default class Main extends Component<Props> {
+export default class ScheduleInput extends Component<Props> {
   render() {
     return (
       <View style={[STYLES.root, this.props.style]}>
         <Text style={STYLES.label}>{this.props.label}</Text>
         <View style={STYLES.button}>
-          <TouchableOpacity onPress={this._onShowOptions}>
-            <Text style={STYLES.value}>{this.props.value || 'Tukwilla Station'}</Text>
-          </TouchableOpacity>
+          <TouchableOpacity onPress={this._onSelectValue}>{this._renderValue()}</TouchableOpacity>
         </View>
       </View>
     );
   }
 
-  _onShowOptions = () => {};
+  _renderValue() {
+    if (this.props.value) {
+      return <Text style={STYLES.value}>{this.props.value}</Text>;
+    }
+    return <Text style={STYLES.placeholder}>Tap to select</Text>;
+  }
+
+  _onSelectValue = () => {
+    this.props.onSelect(this.props.stationType);
+  };
 }

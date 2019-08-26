@@ -39,7 +39,7 @@ export default class Main extends Component<Props> {
       <View style={STYLES.root}>
         <View style={STYLES.spacer20}>
           <View style={STYLES.header}>
-            <Ionicons name='ios-back-arrow' color={colors.FOREGROUND} size={32} />
+            <Ionicons name='ios-arrow-round-back' color={colors.FOREGROUND} size={32} />
             <Text style={STYLES.title}>Back</Text>
           </View>
         </View>

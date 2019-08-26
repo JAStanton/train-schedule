@@ -2,6 +2,7 @@ import _ from 'lodash';
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { Component } from 'react';
 import ApolloClient from 'apollo-boost';
+import gql from 'graphql-tag';
 import { View, StyleSheet } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { ApolloProvider, useQuery } from '@apollo/react-hooks';
@@ -23,7 +24,7 @@ type State = {
 
 const STYLES = StyleSheet.create({
   root: {
-   flex: 1,
+    flex: 1,
     backgroundColor: colors.BACKGROUND,
   },
 });
@@ -45,6 +46,32 @@ export default class Main extends Component<{}, State> {
 
     const client = new ApolloClient({
       resolvers: {
+        Mutation: {
+          chooseStation: (_root, { stationType, stationName }, { cache, getCacheKey }) => {
+            const id = getCacheKey({ __typename: 'User', id: 1 });
+
+            const fragment = gql`
+              fragment station on User {
+                preferences {
+                  origin
+                  destination
+                  direction
+                }
+              }
+            `;
+
+            const preferences = cache.readFragment({ fragment, id });
+            const data = {
+              ...preferences,
+              preferences: {
+                ...preferences.preferences,
+                [stationType.toLowerCase()]: stationName,
+              },
+            };
+
+            cache.writeData({ id, data });
+          },
+        },
         Query: {
           stations: async root => {
             return await database.getRef('/stations');

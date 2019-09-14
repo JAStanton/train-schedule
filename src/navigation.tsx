@@ -1,12 +1,13 @@
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import { fadeIn } from 'react-navigation-transitions';
 
-import { Loading, PickUserPreferences, StationListPicker } from './scenes';
+import { CommuterDisplay, Loading, PickUserPreferences, StationListPicker } from './scenes';
 
 const AppStack = createStackNavigator(
   {
     PickUserPreferences,
     StationListPicker,
+    CommuterDisplay,
   },
   {
     defaultNavigationOptions: {

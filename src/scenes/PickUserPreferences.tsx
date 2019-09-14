@@ -65,6 +65,12 @@ const STYLES = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  saveButtonTextDisabled: {
+    color: colors.FOREGROUND_ACCENT_DIM,
+    fontSize: 21,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
   saveButtonText: {
     color: colors.FOREGROUND,
     fontSize: 21,
@@ -100,7 +106,7 @@ function PickUserPreferences({ data, navigation }: Props) {
           <View style={STYLES.inputSelectors}>
             <ScheduleInput
               stationType={StationType.ORIGIN}
-              onSelect={goToPicker(StationType.DESTINATION)}
+              onSelect={goToPicker(StationType.ORIGIN)}
               label='From'
               value={data.user.preferences.origin}
             />
@@ -118,17 +124,23 @@ function PickUserPreferences({ data, navigation }: Props) {
         </View>
       </View>
       <View style={STYLES.footer}>
-        <TouchableOpacity style={STYLES.saveButton}>
-          <Text style={STYLES.saveButtonText}>Save</Text>
-          <Ionicons
-            name='ios-arrow-round-forward'
-            size={32}
-            style={STYLES.saveIcon}
-            color={colors.BACKGROUND_ACCENT}
-          />
-        </TouchableOpacity>
+        <SaveButton data={data} navigation={navigation} />
       </View>
     </SafeAreaView>
+  );
+}
+
+function SaveButton({ data, navigation }) {
+  const disabled = !data.user.preferences.origin || !data.user.preferences.destination;
+  const onPress = disabled ? null : () => navigation.push('CommuterDisplay');
+  const saveButtonTextStyle = disabled ? STYLES.saveButtonTextDisabled : STYLES.saveButtonText;
+  const iconColor = disabled ? colors.FOREGROUND_ACCENT_DIM : colors.BACKGROUND_ACCENT;
+
+  return (
+    <TouchableOpacity disabled={disabled} style={STYLES.saveButton} onPress={onPress}>
+      <Text style={saveButtonTextStyle}>Save</Text>
+      <Ionicons name='ios-arrow-round-forward' size={32} style={STYLES.saveIcon} color={iconColor} />
+    </TouchableOpacity>
   );
 }
 

@@ -13,7 +13,7 @@ import { withApollo } from 'react-apollo';
 import * as colors from './constants/colors';
 import * as queries from './queries/queries';
 import * as database from './lib/database';
-import { PickUserPreferences, Schedule } from './scenes';
+import { PickUserPreferences } from './scenes';
 import TrainSchedule from './lib/schedule';
 import Navigation from './navigation';
 

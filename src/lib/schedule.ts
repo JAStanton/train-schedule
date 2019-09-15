@@ -80,7 +80,7 @@ export enum AM_PM {
   AM_AND_PM = 'AM_AND_PM',
 }
 
-type ShowMapSettings = {
+export type ShowMapSettings = {
   originToDestination: AM_PM;
   destinationToOrigin: AM_PM;
 };
@@ -100,6 +100,7 @@ function convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIREC
     trainNumber: stop.Train as number,
     stops: _.map(stationOrder[direction], (station, stopId) => {
       const prettyTime = stop[station] as string;
+
       return {
         __typename: 'Stop',
         id: stopId,
@@ -117,14 +118,15 @@ export function oppositeDirectionOfDirection(direction: DIRECTION): DIRECTION {
 
 export function stopsFilteredToTimeOfDay(stops: Stop[], amPm: AM_PM) {
   if (amPm === AM_PM.AM_AND_PM) return stops;
-  return _.filter(stops, ({ time }) => time && time.toFormat('a') === amPm);
+  return _.filter(stops, ({ prettyTime }) => _.includes(prettyTime, amPm));
 }
 
 export function stopsAfterTime(time, stops) {
-  return _.filter(stops, stop => stop.time > time);
+  // TODO: convert gql to entities to I can implment `time` once
+  return _.filter(stops, stop => DateTime.fromFormat(stop.prettyTime, TIME_FORMAT) > time);
 }
 
-export function commuterStops(
+export function computeCommuterStops(
   schedule: TrainSchedule,
   origin: string,
   destination: string,
@@ -140,8 +142,7 @@ export function commuterStops(
     stopsForStation(schedule, destination, oppositeDirectionOfDirection(direction)),
     showMap.destinationToOrigin,
   );
-
-  const now = DateTime.local();
+  const now = DateTime.local().minus({ hours: 20 });
   return stopsAfterTime(now, [...originToDestinationTimes, ...destinationToOriginTimes]);
 }
 

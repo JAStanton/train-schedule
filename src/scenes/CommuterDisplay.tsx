@@ -5,8 +5,10 @@ import { graphql } from 'react-apollo';
 import * as colors from '../constants/colors';
 import * as queries from '../queries/queries';
 import { navigation as navigationProps } from '../constants/types';
+import { DIRECTION } from '../constants/trains';
 import { Header } from '../components';
 import { UserPreferences } from '../lib/database';
+import { AM_PM, ShowMapSettings, TrainSchedule, computeCommuterStops } from '../lib/schedule';
 
 const STYLES = StyleSheet.create({
   root: {
@@ -21,6 +23,7 @@ const STYLES = StyleSheet.create({
 interface Props {
   onSelectPreferences(userPreferences: UserPreferences): void;
   data: {
+    schedule: TrainSchedule;
     user: {
       preferences: UserPreferences;
     };
@@ -29,6 +32,18 @@ interface Props {
 }
 
 function CommuterDisplay({ data, navigation }: Props) {
+  debugger;
+  const commuterStops = computeCommuterStops(
+    data.schedule,
+    data.user.preferences.origin,
+    data.user.preferences.destination,
+    DIRECTION.NORTH,
+    {
+      originToDestination: AM_PM.AM,
+      destinationToOrigin: AM_PM.PM,
+    },
+  );
+
   return (
     <SafeAreaView style={STYLES.root}>
       <Header title='Commuter View' />

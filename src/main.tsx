@@ -14,7 +14,7 @@ import * as colors from './constants/colors';
 import * as queries from './queries/queries';
 import * as database from './lib/database';
 import { PickUserPreferences } from './scenes';
-import TrainSchedule from './lib/schedule';
+import { rawToGQL } from './lib/schedule';
 import Navigation from './navigation';
 
 type State = {
@@ -101,8 +101,7 @@ export default class Main extends Component<{}, State> {
           },
           schedule: async root => {
             const data = await database.getRef('/schedule');
-            const foo = new TrainSchedule(data);
-            return foo.transformed;
+            return rawToGQL(data);
           },
           user: async root => {
             const data = await database.getUserPreferences();

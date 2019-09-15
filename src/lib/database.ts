@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 
 import * as storage from '../constants/storage';
-import Schedule, { RawTrainSchedule } from './schedule';
+import { RawTrainSchedule } from './schedule';
 import { DIRECTION } from '../constants/trains';
 
 const db = database();
@@ -16,12 +16,6 @@ export type UserPreferences = {
   destination: string;
   direction: DIRECTION;
 };
-
-export type SessionData = {
-  schedule: Schedule;
-  stations: Stations;
-  userPreferences: UserPreferences | undefined;
-} | null;
 
 export function clearUserPreferences() {
   return AsyncStorage.clear();

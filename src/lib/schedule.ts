@@ -85,100 +85,101 @@ type ShowMapSettings = {
   destinationToOrigin: AM_PM;
 };
 
-export default class Schedule {
-  _raw: RawTrainSchedule;
-  transformed: TrainSchedule;
+export function rawToGQL(raw) {
+  return {
+    __typename: 'Thing',
+    [DIRECTION.NORTH]: convertRawStopsToTrain(raw.north, DIRECTION.NORTH),
+    [DIRECTION.SOUTH]: convertRawStopsToTrain(raw.south, DIRECTION.SOUTH),
+  };
+}
 
-  constructor(raw: RawTrainSchedule) {
-    this._raw = raw;
-    this.transformed = this._transformRaw();
+function convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIRECTION): Train[] {
+  return _.map(stops, (stop, trainId) => ({
+    __typename: 'Train',
+    id: trainId,
+    trainNumber: stop.Train as number,
+    stops: _.map(stationOrder[direction], (station, stopId) => {
+      const prettyTime = stop[station] as string;
+      return {
+        __typename: 'Stop',
+        id: stopId,
+        stationName: station,
+        // time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
+        prettyTime: prettyTime || null,
+      };
+    }),
+  }));
+}
+
+export function oppositeDirectionOfDirection(direction: DIRECTION): DIRECTION {
+  return direction === DIRECTION.NORTH ? DIRECTION.SOUTH : DIRECTION.NORTH;
+}
+
+export function stopsFilteredToTimeOfDay(stops: Stop[], amPm: AM_PM) {
+  if (amPm === AM_PM.AM_AND_PM) return stops;
+  return _.filter(stops, ({ time }) => time && time.toFormat('a') === amPm);
+}
+
+export function stopsAfterTime(time, stops) {
+  return _.filter(stops, stop => stop.time > time);
+}
+
+export function commuterStops(
+  schedule: TrainSchedule,
+  origin: string,
+  destination: string,
+  direction: DIRECTION,
+  showMap: ShowMapSettings,
+): Stop[] {
+  const originToDestinationTimes = stopsFilteredToTimeOfDay(
+    stopsForStation(schedule, origin, direction),
+    showMap.originToDestination,
+  );
+
+  const destinationToOriginTimes = stopsFilteredToTimeOfDay(
+    stopsForStation(schedule, destination, oppositeDirectionOfDirection(direction)),
+    showMap.destinationToOrigin,
+  );
+
+  const now = DateTime.local();
+  return stopsAfterTime(now, [...originToDestinationTimes, ...destinationToOriginTimes]);
+}
+
+function stopsForStation(schedule: TrainSchedule, stationName: string, direction: DIRECTION): Stop[] {
+  const trains = schedule[direction];
+  const stop = findStopByName(trains[0], stationName);
+  const stops = [];
+  for (const train of trains) {
+    stops.push(train.stops[stop.id]);
   }
+  return stops;
+}
 
-  static oppositeDirectionOfDirection(direction: DIRECTION): DIRECTION {
-    return direction === DIRECTION.NORTH ? DIRECTION.SOUTH : DIRECTION.NORTH;
-  }
+function stopsBetweenStations(
+  schedule: TrainSchedule,
+  start: string,
+  end: string,
+  direction: DIRECTION,
+): Stop[] {
+  const trains = schedule[direction];
+  const startStop = findStopByName(trains[0], start);
+  const startStopIndex = startStop.id;
+  const endStop = findStopByName(trains[0], end);
+  const endStopIndex = endStop.id;
 
-  static stopsFilteredToTimeOfDay(stops: Stop[], amPm: AM_PM) {
-    if (amPm === AM_PM.AM_AND_PM) return stops;
-    return _.filter(stops, ({ time }) => time && time.toFormat('a') === amPm);
-  }
-
-  static stopsAfterTime(time, stops) {
-    return _.filter(stops, stop => stop.time > time);
-  }
-
-  commuterStops(origin: string, destination: string, direction: DIRECTION, showMap: ShowMapSettings): Stop[] {
-    const originToDestinationTimes = Schedule.stopsFilteredToTimeOfDay(
-      this.stopsForStation(origin, direction),
-      showMap.originToDestination,
-    );
-
-    const destinationToOriginTimes = Schedule.stopsFilteredToTimeOfDay(
-      this.stopsForStation(destination, Schedule.oppositeDirectionOfDirection(direction)),
-      showMap.destinationToOrigin,
-    );
-
-    const now = DateTime.local();
-    return Schedule.stopsAfterTime(now, [...originToDestinationTimes, ...destinationToOriginTimes]);
-  }
-
-  stopsForStation(stationName: string, direction: DIRECTION): Stop[] {
-    const trains = this.transformed[direction];
-    const stop = this._findStopByName(trains[0], stationName);
-    const stops = [];
-    for (const train of trains) {
-      stops.push(train.stops[stop.id]);
-    }
-    return stops;
-  }
-
-  stopsBetweenStations(start: string, end: string, direction: DIRECTION): Stop[] {
-    const trains = this.transformed[direction];
-    const startStop = this._findStopByName(trains[0], start);
-    const startStopIndex = startStop.id;
-    const endStop = this._findStopByName(trains[0], end);
-    const endStopIndex = endStop.id;
-
-    const schedule = [];
-    for (const train of trains) {
-      for (let stopId = startStop.id; stopId < train.stops.length; stopId++) {
-        schedule.push(train.stops[stopId]);
-        if (stopId === endStopIndex) {
-          return schedule;
-        }
+  const stops = [];
+  for (const train of trains) {
+    for (let stopId = startStop.id; stopId < train.stops.length; stopId++) {
+      stops.push(train.stops[stopId]);
+      if (stopId === endStopIndex) {
+        return stops;
       }
     }
-
-    return schedule;
   }
 
-  _findStopByName(train: Train, stationName: string): Stop {
-    return _.find(train.stops, stop => stop.stationName === stationName);
-  }
+  return stops;
+}
 
-  _transformRaw(): TrainSchedule {
-    return {
-      __typename: 'Thing',
-      [DIRECTION.NORTH]: this._convertRawStopsToTrain(this._raw.north, DIRECTION.NORTH),
-      [DIRECTION.SOUTH]: this._convertRawStopsToTrain(this._raw.south, DIRECTION.SOUTH),
-    };
-  }
-
-  _convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIRECTION): Train[] {
-    return _.map(stops, (stop, trainId) => ({
-      __typename: 'Train',
-      id: trainId,
-      trainNumber: stop.Train as number,
-      stops: _.map(stationOrder[direction], (station, stopId) => {
-        const prettyTime = stop[station] as string;
-        return {
-          __typename: 'Stop',
-          id: stopId,
-          stationName: station,
-          // time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
-          prettyTime: prettyTime || null,
-        };
-      }),
-    }));
-  }
+function findStopByName(train: Train, stationName: string): Stop {
+  return _.find(train.stops, stop => stop.stationName === stationName);
 }

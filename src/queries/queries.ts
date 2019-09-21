@@ -8,6 +8,7 @@ export const BASE_RESOURCES = gql`
         id
         stops {
           id
+          stopId
           prettyTime
           stationName
         }
@@ -17,6 +18,7 @@ export const BASE_RESOURCES = gql`
         id
         stops {
           id
+          stopId
           prettyTime
           stationName
         }

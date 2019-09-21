@@ -38,7 +38,7 @@ class Loading extends Component {
     }
 
     if (hasSchedule && hasPreferences) {
-      props.navigation.navigate('App');
+      props.navigation.navigate('CommuterDisplay');
       return;
     }
   }

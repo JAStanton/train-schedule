@@ -8,7 +8,7 @@ import { navigation as navigationProps } from '../constants/types';
 import { DIRECTION } from '../constants/trains';
 import { Header } from '../components';
 import { UserPreferences } from '../lib/database';
-import { AM_PM, ShowMapSettings, TrainSchedule, computeCommuterStops } from '../lib/schedule';
+import { Stop, AM_PM, ShowMapSettings, TrainSchedule, computeCommuterStops } from '../lib/schedule';
 
 const STYLES = StyleSheet.create({
   root: {
@@ -17,6 +17,12 @@ const STYLES = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 8 * 4,
+  },
+  text: {
+    color: colors.FOREGROUND,
+    fontSize: 21,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 });
 
@@ -32,7 +38,6 @@ interface Props {
 }
 
 function CommuterDisplay({ data, navigation }: Props) {
-  debugger;
   const commuterStops = computeCommuterStops(
     data.schedule,
     data.user.preferences.origin,
@@ -47,8 +52,16 @@ function CommuterDisplay({ data, navigation }: Props) {
   return (
     <SafeAreaView style={STYLES.root}>
       <Header title='Commuter View' />
-      <View style={STYLES.content}></View>
+      <View style={STYLES.content}>{commuterStops.map(displayTime)}</View>
     </SafeAreaView>
+  );
+}
+
+function displayTime(stop: Stop) {
+  return (
+    <Text key={stop.id} style={STYLES.text}>
+      {stop.stationName}: {stop.prettyTime}
+    </Text>
   );
 }
 

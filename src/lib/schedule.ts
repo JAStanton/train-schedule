@@ -62,14 +62,15 @@ export type TrainSchedule = {
 };
 
 export type Stop = {
-  id: number;
+  id: string;
+  stopId: number;
   stationName: string;
   time?: luxon;
   prettyTime?: string;
 };
 
 type Train = {
-  id: number;
+  id: string;
   trainNumber: number;
   stops: Stop[];
 };
@@ -96,14 +97,14 @@ export function rawToGQL(raw) {
 function convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIRECTION): Train[] {
   return _.map(stops, (stop, trainId) => ({
     __typename: 'Train',
-    id: trainId,
+    id: `${direction}-${trainId}`,
     trainNumber: stop.Train as number,
     stops: _.map(stationOrder[direction], (station, stopId) => {
       const prettyTime = stop[station] as string;
-
       return {
         __typename: 'Stop',
-        id: stopId,
+        id: `${direction}-${stop.Train}-${stopId}`,
+        stopId,
         stationName: station,
         // time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
         prettyTime: prettyTime || null,
@@ -142,42 +143,18 @@ export function computeCommuterStops(
     stopsForStation(schedule, destination, oppositeDirectionOfDirection(direction)),
     showMap.destinationToOrigin,
   );
-  const now = DateTime.local().minus({ hours: 20 });
+  const now = DateTime.local().startOf('day');
+  // const now = DateTime.local();
   return stopsAfterTime(now, [...originToDestinationTimes, ...destinationToOriginTimes]);
 }
 
 function stopsForStation(schedule: TrainSchedule, stationName: string, direction: DIRECTION): Stop[] {
   const trains = schedule[direction];
-  const stop = findStopByName(trains[0], stationName);
+  const stopId = findStopByName(trains[0], stationName).stopId;
   const stops = [];
   for (const train of trains) {
-    stops.push(train.stops[stop.id]);
+    stops.push(_.find(train.stops, stop => stop.stopId === stopId));
   }
-  return stops;
-}
-
-function stopsBetweenStations(
-  schedule: TrainSchedule,
-  start: string,
-  end: string,
-  direction: DIRECTION,
-): Stop[] {
-  const trains = schedule[direction];
-  const startStop = findStopByName(trains[0], start);
-  const startStopIndex = startStop.id;
-  const endStop = findStopByName(trains[0], end);
-  const endStopIndex = endStop.id;
-
-  const stops = [];
-  for (const train of trains) {
-    for (let stopId = startStop.id; stopId < train.stops.length; stopId++) {
-      stops.push(train.stops[stopId]);
-      if (stopId === endStopIndex) {
-        return stops;
-      }
-    }
-  }
-
   return stops;
 }
 

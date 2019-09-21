@@ -35,12 +35,6 @@ allprojects {
     }
 }
 
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
-    distributionUrl = distributionUrl.replace("bin", "all")
-}
-
 def getPassword(String currentUser, String keyChain) {
    def stdout = new ByteArrayOutputStream()
    def stderr = new ByteArrayOutputStream()
@@ -52,5 +46,5 @@ def getPassword(String currentUser, String keyChain) {
    }
    //noinspection GroovyAssignabilityCheck
       stdout.toString().trim()
-} 
+}
 

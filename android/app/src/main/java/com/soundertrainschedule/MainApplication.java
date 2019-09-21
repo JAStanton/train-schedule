@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage;
 import io.invertase.firebase.database.ReactNativeFirebaseDatabasePackage;
-import io.invertase.firebase.ReactNativeFirebaseAppPackage;
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

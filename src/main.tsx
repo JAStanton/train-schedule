@@ -1,20 +1,10 @@
 import _ from 'lodash';
-import AsyncStorage from '@react-native-community/async-storage';
 import React, { Component } from 'react';
-import ApolloClient from 'apollo-boost';
-import gql from 'graphql-tag';
 import { View, StyleSheet } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { persistCache } from 'apollo-cache-persist';
-import { withApollo } from 'react-apollo';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 import * as colors from './constants/colors';
-import * as queries from './queries/queries';
-import * as database from './lib/database';
-import { PickUserPreferences } from './scenes';
-import { rawToGQL } from './lib/schedule';
+import createStore from './lib/store';
 import Navigation from './navigation';
 
 type State = {
@@ -33,97 +23,7 @@ export default class Main extends Component<{}, State> {
   state = { loaded: false, client: null };
 
   async componentDidMount() {
-    const cache = new InMemoryCache();
-
-    try {
-      await persistCache({
-        cache,
-        storage: AsyncStorage,
-      });
-    } catch (error) {
-      console.error('Error restoring Apollo cache', error);
-    }
-
-    const client = new ApolloClient({
-      resolvers: {
-        Mutation: {
-          swapDirections: (_root, _variables, { cache, getCacheKey }) => {
-            const id = getCacheKey({ __typename: 'User', id: 1 });
-            const fragment = gql`
-              fragment station on User {
-                preferences {
-                  origin
-                  destination
-                  direction
-                }
-              }
-            `;
-
-            const preferences = cache.readFragment({ fragment, id });
-            const data = {
-              ...preferences,
-              preferences: {
-                ...preferences.preferences,
-                destination: preferences.preferences.origin,
-                origin: preferences.preferences.destination,
-              },
-            };
-
-            cache.writeData({ id, data });
-          },
-          chooseStation: (_root, { stationType, stationName }, { cache, getCacheKey }) => {
-            const id = getCacheKey({ __typename: 'User', id: 1 });
-            const fragment = gql`
-              fragment station on User {
-                preferences {
-                  origin
-                  destination
-                  direction
-                }
-              }
-            `;
-
-            const preferences = cache.readFragment({ fragment, id });
-            const data = {
-              ...preferences,
-              preferences: {
-                ...preferences.preferences,
-                [stationType.toLowerCase()]: stationName,
-              },
-            };
-
-            cache.writeData({ id, data });
-          },
-        },
-        Query: {
-          stations: async root => {
-            return await database.getRef('/stations');
-          },
-          schedule: async root => {
-            const data = await database.getRef('/schedule');
-            return rawToGQL(data);
-          },
-          user: async root => {
-            const data = await database.getUserPreferences();
-            const origin = _.get(data, 'origin', '');
-            const destination = _.get(data, 'destination', '');
-            const direction = _.get(data, 'direction', '');
-
-            return {
-              __typename: 'User',
-              id: 1,
-              preferences: {
-                __typename: 'UserPreferences',
-                origin,
-                destination,
-                direction,
-              },
-            };
-          },
-        },
-      },
-      cache,
-    });
+    const client = await createStore();
 
     this.setState({
       client,
@@ -133,6 +33,7 @@ export default class Main extends Component<{}, State> {
 
   render() {
     const { client, loaded } = this.state;
+
     if (!loaded) {
       return <View style={STYLES.root} />;
     }

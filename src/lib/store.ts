@@ -14,6 +14,7 @@ export default async function createStore() {
       storage: AsyncStorage,
     });
   } catch (error) {
+    /* eslint-disable-next-line */
     console.error('Error restoring Apollo cache', error);
   }
 

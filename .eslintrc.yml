@@ -1,0 +1,235 @@
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 2017
+  sourceType: module
+  ecmaFeatures:
+    jsx: true
+env:
+  es6: true
+plugins:
+- eslint-comments
+- import
+- "@typescript-eslint"
+settings:
+  import/resolver:
+    node:
+      extensions:
+      - ".js"
+      - ".jsx"
+      - ".mjs"
+      - ".ts"
+      - ".tsx"
+  import/parsers:
+    "@typescript-eslint/parser":
+    - ".ts"
+    - ".tsx"
+  import/ignore:
+  - node_modules/
+rules:
+  for-direction: error
+  no-async-promise-executor: error
+  no-compare-neg-zero: error
+  no-cond-assign: error
+  no-console: error
+  no-constant-condition:
+  - error
+  - checkLoops: false
+  no-control-regex: error
+  no-debugger: error
+  no-duplicate-case: error
+  no-empty: error
+  no-empty-character-class: error
+  no-ex-assign: error
+  no-extra-boolean-cast: error
+  no-inner-declarations: error
+  no-invalid-regexp: error
+  no-irregular-whitespace: error
+  no-misleading-character-class: error
+  no-obj-calls: error
+  no-prototype-builtins: error
+  no-regex-spaces: error
+  no-sparse-arrays: error
+  no-template-curly-in-string: error
+  no-unsafe-finally: error
+  require-atomic-updates: error
+  use-isnan: error
+  curly:
+  - error
+  - multi-line
+  guard-for-in: error
+  no-alert: error
+  no-caller: error
+  no-empty-pattern: error
+  no-eval: error
+  no-extra-bind: error
+  no-fallthrough: error
+  no-implicit-globals: error
+  no-implied-eval: error
+  no-iterator: error
+  no-labels:
+  - error
+  - allowLoop: true
+  no-lone-blocks: error
+  no-multi-str: error
+  no-new: error
+  no-new-func: error
+  no-new-wrappers: error
+  no-octal-escape: error
+  no-return-assign:
+  - error
+  - always
+  no-return-await: error
+  no-script-url: error
+  no-self-assign: error
+  no-self-compare: error
+  no-sequences: error
+  no-throw-literal: error
+  no-unmodified-loop-condition: error
+  no-unused-expressions: error
+  no-useless-call: error
+  no-useless-concat: error
+  no-useless-escape: error
+  no-useless-return: error
+  no-void: error
+  prefer-promise-reject-errors: error
+  yoda: error
+  no-label-var: error
+  no-shadow:
+  - error
+  - builtinGlobals: true
+  global-require: error
+  handle-callback-err:
+  - error
+  - "^(err|error|.+[eE]rror)$"
+  no-buffer-constructor: error
+  no-new-require: error
+  no-path-concat: error
+  func-style:
+  - error
+  - declaration
+  - allowArrowFunctions: true
+  id-blacklist:
+  - error
+  - e
+  - err
+  - cb
+  lines-between-class-members:
+  - error
+  - always
+  - exceptAfterSingleLine: true
+  max-len:
+  - error
+  - code: 110
+    comments: 80
+    ignoreUrls: true
+    ignoreStrings: true
+    ignoreTemplateLiterals: true
+    ignoreRegExpLiterals: true
+  multiline-comment-style:
+  - error
+  - separate-lines
+  new-cap:
+  - error
+  - properties: false
+  no-array-constructor: error
+  no-lonely-if: error
+  no-multi-assign: error
+  no-new-object: error
+  no-unneeded-ternary: error
+  operator-assignment: error
+  spaced-comment:
+  - error
+  - always
+  - line:
+      exceptions:
+      - "/"
+      - "-"
+      - "="
+    block:
+      exceptions:
+      - "*"
+      balanced: true
+  no-useless-computed-key: error
+  no-useless-rename: error
+  no-var: error
+  object-shorthand:
+  - error
+  - always
+  - avoidExplicitReturnArrows: true
+  arrow-body-style:
+  - error
+  - as-needed
+  prefer-arrow-callback: error
+  prefer-const: error
+  prefer-destructuring:
+  - error
+  - AssignmentExpression:
+      object: false
+      array: false
+    VariableDeclarator:
+      object: true
+      array: true
+  prefer-numeric-literals: error
+  prefer-rest-params: error
+  prefer-spread: error
+  prefer-template: error
+  symbol-description: error
+  eslint-comments/disable-enable-pair: error
+  eslint-comments/no-aggregating-enable: error
+  eslint-comments/no-duplicate-disable: error
+  eslint-comments/no-unlimited-disable: error
+  eslint-comments/no-unused-disable: error
+  eslint-comments/no-unused-enable: error
+  import/no-unresolved: error
+  import/no-dynamic-require: error
+  import/no-self-import: error
+  import/no-useless-path-segments: error
+  import/no-named-as-default: error
+  import/no-extraneous-dependencies:
+  - error
+  - devDependencies: false
+  import/no-mutable-exports: error
+  import/no-duplicates: error
+  import/extensions:
+  - error
+  - never
+  - css: always
+  import/no-named-default: error
+  "@typescript-eslint/adjacent-overload-signatures": error
+  "@typescript-eslint/array-type": error
+  "@typescript-eslint/ban-ts-ignore": error
+  "@typescript-eslint/ban-types":
+  - error
+  - types:
+      Boolean:
+        message: avoid object wrappers for primitive types
+        fixWith: boolean
+      Number:
+        message: avoid object wrappers for primitive types
+        fixWith: number
+      String:
+        message: avoid object wrappers for primitive types
+        fixWith: string
+  "@typescript-eslint/camelcase": error
+  "@typescript-eslint/class-name-casing": error
+  "@typescript-eslint/generic-type-naming":
+  - error
+  - "^T[A-Z][a-zA-Z]+$"
+  "@typescript-eslint/interface-name-prefix":
+  - error
+  - never
+  "@typescript-eslint/member-naming":
+  - error
+  - private: "^_"
+  "@typescript-eslint/consistent-type-assertions": error
+  "@typescript-eslint/no-inferrable-types": error
+  "@typescript-eslint/no-misused-new": error
+  "@typescript-eslint/triple-slash-reference":
+  - error
+  - path: never
+    types: never
+    lib: never
+  "@typescript-eslint/no-useless-constructor": error
+  "@typescript-eslint/no-var-requires": error
+  "@typescript-eslint/prefer-for-of": error
+  "@typescript-eslint/prefer-namespace-keyword": error

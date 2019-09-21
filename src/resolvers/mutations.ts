@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export default {
   Mutation: {
-    swapDirections: (_root, _variables, { cache, getCacheKey }) => {
+    swapDirections(_root, _variables, { cache, getCacheKey }) {
       const id = getCacheKey({ __typename: 'User', id: 1 });
       const fragment = gql`
         fragment station on User {
@@ -26,7 +26,7 @@ export default {
 
       cache.writeData({ id, data });
     },
-    chooseStation: (_root, { stationType, stationName }, { cache, getCacheKey }) => {
+    chooseStation(_root, { stationType, stationName }, { cache, getCacheKey }) {
       const id = getCacheKey({ __typename: 'User', id: 1 });
       const fragment = gql`
         fragment station on User {

@@ -16,7 +16,7 @@ const stationNames = [
 ];
 
 const stationOrder: {
-  [key in DIRECTION]: string[];
+  [TKey in DIRECTION]: string[];
 } = {
   [DIRECTION.NORTH]: stationNames,
   [DIRECTION.SOUTH]: stationNames.slice().reverse(),
@@ -106,7 +106,6 @@ function convertRawStopsToTrain(stops: RawTrainScheduleStops[], direction: DIREC
         id: `${direction}-${stop.Train}-${stopId}`,
         stopId,
         stationName: station,
-        // time: prettyTime ? DateTime.fromFormat(prettyTime, TIME_FORMAT) : null,
         prettyTime: prettyTime || null,
       };
     }),
@@ -150,7 +149,7 @@ export function computeCommuterStops(
 
 function stopsForStation(schedule: TrainSchedule, stationName: string, direction: DIRECTION): Stop[] {
   const trains = schedule[direction];
-  const stopId = findStopByName(trains[0], stationName).stopId;
+  const { stopId } = findStopByName(trains[0], stationName);
   const stops = [];
   for (const train of trains) {
     stops.push(_.find(train.stops, stop => stop.stopId === stopId));

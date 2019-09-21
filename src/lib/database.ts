@@ -7,7 +7,6 @@ import { RawTrainSchedule } from './schedule';
 import { DIRECTION } from '../constants/trains';
 
 const db = database();
-const DEFAULT_TTL = { day: 1 };
 
 export type Stations = string[];
 
@@ -25,6 +24,7 @@ export async function getUserPreferences() {
   try {
     return JSON.parse(await AsyncStorage.getItem(storage.USER_PREFERENCES));
   } catch (error) {
+    /* eslint-disable-next-line */
     console.error('Failed to get session data out of storage', error);
   }
 }
@@ -33,6 +33,7 @@ export async function setUserPreferences(userPreferences: UserPreferences) {
   try {
     await AsyncStorage.setItem(storage.USER_PREFERENCES, JSON.stringify(userPreferences));
   } catch (error) {
+    /* eslint-disable-next-line */
     console.error('Failed to write user preferences');
   }
 }

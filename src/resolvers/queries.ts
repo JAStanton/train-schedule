@@ -5,14 +5,14 @@ import { rawToGQL } from '../lib/schedule';
 
 export default {
   Query: {
-    stations: async root => {
-      return await database.getRef('/stations');
+    async stations(root) {
+      return database.getRef('/stations');
     },
-    schedule: async root => {
+    async schedule(root) {
       const data = await database.getRef('/schedule');
       return rawToGQL(data);
     },
-    user: async root => {
+    async user(root) {
       const data = await database.getUserPreferences();
       const origin = _.get(data, 'origin', '');
       const destination = _.get(data, 'destination', '');

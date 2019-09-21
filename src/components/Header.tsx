@@ -8,7 +8,10 @@ const STYLES = StyleSheet.create({
   header: {
     flex: 0.1,
     flexDirection: 'row',
-    maxHeight: 60,
+    minHeight: 40,
+    maxHeight: 40,
+    height: 40,
+    marginBottom: 8 * 2,
   },
   backButton: {
     flex: 1,

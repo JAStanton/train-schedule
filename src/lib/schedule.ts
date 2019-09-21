@@ -23,7 +23,7 @@ const stationOrder: {
 };
 
 // example: 5:18:00 pm
-const TIME_FORMAT = 'h:mm:ss a';
+export const TIME_FORMAT = 'h:mm:ss a';
 
 export type RawTrainScheduleStops = {
   [key: string]: string | number;

@@ -4,7 +4,8 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "./scripts/postinstall"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+# AndroidX support
+npx jetify
+
+./scripts/install:pods
